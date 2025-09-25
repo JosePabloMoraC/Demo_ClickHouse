@@ -1,0 +1,43 @@
+services:
+  clickhouse:
+    image: clickhouse:25.8.4.13-jammy
+    container_name: clickhouse-user123
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_USER: user
+      CLICKHOUSE_PASSWORD: 123
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+
+  tabix:
+    image: spoonest/clickhouse-tabix-web-client
+    container_name: tabix
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - clickhouse
+
+  node-app:
+    build: ./API # utilizar el dockerfile en el directorio actual
+    container_name: node-app
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    working_dir: /usr/src/app
+    volumes:
+      - ./API:/usr/src/app
+    command: npm start
+
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
