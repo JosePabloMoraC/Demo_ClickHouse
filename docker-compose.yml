@@ -35,7 +35,8 @@ services:
       - "3001:3001"
     working_dir: /usr/src/app
     volumes:
-      - ./API:/usr/src/app
+      - ./API:/usr/src/app # Montar el código local
+      - /usr/src/app/node_modules # Evitar sobrescribir node_modules
     command: npm start
 
 volumes:
