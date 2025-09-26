@@ -4,6 +4,9 @@ import routes from './routes.js';
 const app = express();
 const port = 3001;
 
+// Middleware para parsear JSON
+app.use(express.json());
+
 // Rutas para tipo de comida
 app.use('/comidas', routes);
 
